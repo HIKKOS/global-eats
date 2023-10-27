@@ -51,43 +51,36 @@
     header="edit category"
     :style="{ width: '50vw' }"
   >
-    <div>
-      <form style="height: 50vh" @submit.prevent="submitForm">
-        <Toast />
-        <div class="grid formgrid">
-          <div class="field col-12 md:col-6">
-            <input
-              type="text"
-              id="categoryName"
-              :v-model="editedCategory"
-              :value="editedCategory.categoryName"
-              required
-              class="w-full p-2 py-3 text-base border-solid outline-none appearance-none text-color surface-overlay border-1 surface-border border-round focus:border-primary"
-              placeholder="Category name"
-            />
-            <!-- <select id="status" v-model="categorie.status"
-                    class="w-full p-2 py-3 mt-2 text-base border-solid outline-none text-color surface-overlay border-1 surface-border border-round focus:border-primary"
-                    placeholder="Status">
-                </select> -->
-          </div>
+    <form style="height: 50vh" @submit.prevent="putCategory">
+      <div class="grid formgrid">
+        <div class="field col-12 md:col-6">
+          <input
+            type="text"
+            id="categoryName"
+            v-model="editedCategory.categoryName"
+            required
+            class="w-full p-2 py-3 text-base border-solid outline-none appearance-none text-color surface-overlay border-1 surface-border border-round focus:border-primary"
+            placeholder="Category name"
+          />
         </div>
-        <div class="flex">
-          <Button
-            @click="closeForm"
-            type="cancel"
-            class="w-full mr-2 justify-content-center"
-            style="background-color: #183045"
-            >Cancel</Button
-          >
-          <Button
-            type="submit"
-            class="w-full ml-2 justify-content-center"
-            style="background-color: #2a9d8f"
-            >Add Category</Button
-          >
-        </div>
-      </form>
-    </div>
+      </div>
+      <div class="flex">
+        <Button
+          @click="closeForm"
+          type="cancel"
+          class="w-full mr-2 justify-content-center"
+          style="background-color: #183045"
+          >Cancel</Button
+        >
+        <Button
+          type="submit"
+          class="w-full ml-2 justify-content-center"
+          style="background-color: #2a9d8f"
+          @click="putCategory"
+          >Edit</Button
+        >
+      </div>
+    </form>
   </Dialog>
 </template>
 <script>
@@ -154,18 +147,25 @@ export default {
         this.deleteConfirmationVisible = false;
       }
     },
-    editCategory(category) {
+    async editCategory(category) {
       this.isEditVisible = true;
-      console.error(category);
-      this.editedCategory = category;
+      this.editedCategory = { ...category };
     },
     async putCategory() {
       try {
-        await axios.put(
+        const res = await axios.put(
           `http://localhost:3000/api/categories/${this.editedCategory.id}`,
-          this.category
+          {
+            categoryName: this.editedCategory.categoryName,
+          }
         );
-        this.getCategories();
+
+        if (res.status !== 200) {
+          console.log("Categoria mo actualizada");
+          return;
+        }
+        this.isEditVisible = false;
+        await this.getCategories();
       } catch (error) {
         console.error(
           `Error al actualizar la categoria con ID ${this.editedCategory.id}:`,

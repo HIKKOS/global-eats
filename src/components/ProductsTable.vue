@@ -108,7 +108,6 @@
       </div>
       <div class="flex">
         <Button
-          @click="closeForm"
           type="cancel"
           class="w-full mr-2 justify-content-center"
           style="background-color: #183045"
@@ -246,7 +245,7 @@ export default {
     async editProduct(product) {
       this.isVisibleEditDialog = true;
       this.editedProduct = { ...product };
-      await this.onConfirmEdit(this.editedProduct.id);
+      //await this.onConfirmEdit(this.editedProduct.id);
     },
     async postProuct() {
       try {
