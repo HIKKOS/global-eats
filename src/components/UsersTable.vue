@@ -67,6 +67,27 @@
       </div>
     </Form>
   </Dialog>
+
+  <Dialog v-model:visible="deleteConfirmationVisible" modal>
+    <div>
+      <p>¿Estás seguro de que deseas eliminar el usuario?</p>
+      <br />
+    </div>
+    <div class="flex">
+      <Button
+        class="w-full mr-2 justify-content-center"
+        style="background-color: #183045"
+        label="Cancelar"
+        @click="cancelDelete"
+      />
+      <Button
+        class="w-full ml-2 justify-content-center"
+        style="background-color: #2a9d8f"
+        label="Confirmar"
+        @click="confirmDelete"
+      />
+    </div>
+  </Dialog>
 </template>
 
 <script>
