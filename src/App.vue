@@ -3,14 +3,21 @@
     <HeaderComponent />
   </div>
   <div class="app">
-    <SidebarComponent />
+   
+    <SidebarComponent/>
+<!--       <v-if :is="isAdmin"  /> -->
+  
     <router-view />
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 import HeaderComponent from "./components/HeaderComponent.vue";
 import SidebarComponent from "./components/SidebarComponent.vue";
+
+let isAdmin = ref (true);
+
 export default {
   components: {
     HeaderComponent,

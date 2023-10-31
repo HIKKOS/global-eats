@@ -96,7 +96,13 @@ import Column from "primevue/column";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import axios from "axios";
-
+import { baseURL } from "../config/config";
+const axiosInstance = axios.create({
+  baseURL: `${baseURL}/users`,
+  headers: {
+    "x-token": localStorage.getItem("jwt"),
+  },
+});
 export default {
   components: {
     DataTable,
@@ -122,9 +128,7 @@ export default {
   methods: {
     async getRoles() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/users/roles?page=1&limit=10"
-        );
+        const response = await axiosInstance.get("/roles?page=1&limit=10");
         this.roles = response.data.roles;
         console.log({ roles: this.roles });
       } catch (error) {
@@ -136,9 +140,7 @@ export default {
     },
     async getUsers() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/users?page=1&limit=10"
-        );
+        const response = await axiosInstance.get();
         this.users = response.data.users;
         console.log(this.users);
       } catch (error) {
@@ -154,8 +156,8 @@ export default {
     },
     async changeRole() {
       try {
-        const response = await axios.put(
-          `http://localhost:3000/api/users/change/${this.editedUser.userId}`,
+        const response = await axiosInstance.put(
+          `/change/${this.editedUser.userId}`,
           { roleId: this.editedUser.roleId }
         );
         if (response.status == 200) this.getUsers();

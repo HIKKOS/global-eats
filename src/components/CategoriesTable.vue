@@ -84,11 +84,18 @@
   </Dialog>
 </template>
 <script>
-import axios from "axios";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
+import axios from "axios";
+import { baseURL } from "../config/config";
+const axiosInstance = axios.create({
+  baseURL: `${baseURL}/categories/`,
+  headers: {
+    "x-token": localStorage.getItem("jwt"),
+  },
+});
 export default {
   components: {
     DataTable,
@@ -115,9 +122,7 @@ export default {
     },
     async getCategories() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories"
-        );
+        const response = await axiosInstance.get();
         this.categories = response.data.categories;
         this.count = response.data.count;
       } catch (error) {
@@ -126,7 +131,7 @@ export default {
     },
     async deleteCategorie(id) {
       try {
-        await axios.delete(`http://localhost:3000/api/categories/${id}`);
+        await axiosInstance.delete(`/${id}`);
         this.getCategories();
       } catch (error) {
         console.error(`Error al eliminar la categoria con ID ${id}:`, error);
@@ -153,12 +158,9 @@ export default {
     },
     async putCategory() {
       try {
-        const res = await axios.put(
-          `http://localhost:3000/api/categories/${this.editedCategory.id}`,
-          {
-            categoryName: this.editedCategory.categoryName,
-          }
-        );
+        const res = await axiosInstance.put(`/${this.editedCategory.id}`, {
+          categoryName: this.editedCategory.categoryName,
+        });
 
         if (res.status !== 200) {
           console.log("Categoria mo actualizada");

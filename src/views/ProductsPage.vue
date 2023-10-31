@@ -40,7 +40,6 @@ import ProductsTableVue from "../components/ProductsTable.vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import FormAddProduct from "../components/FormAddProduct.vue";
-
 import { ref } from "vue";
 
 const visible = ref(false);

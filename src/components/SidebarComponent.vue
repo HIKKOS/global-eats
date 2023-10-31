@@ -1,7 +1,7 @@
 <template>
   <aside :class="'is-expanded'">
     <div class="menu">
-      <router-link to="/" class="button">
+      <router-link to="/products" class="button">
         <font-awesome-icon class="material-icons" icon="shopping-bag" />
         <Button class="material-icons" disabled text label="Products" />
       </router-link>
@@ -28,7 +28,7 @@ const is_expanded = ref(localStorage.getItem("is_expanded") === "true");
 aside {
   display: flex;
   flex-direction: column;
-  /* Added bluf effect */
+
   background: #4bb6b7;
 
   width: calc(2rem + 28px);

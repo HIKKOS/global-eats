@@ -146,13 +146,20 @@
 </template>
 
 <script>
-import axios from "axios";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import FileUpload from "primevue/fileupload";
+import { baseURL } from "../config/config";
 
+import axios from "axios";
+const axiosInstance = axios.create({
+  baseURL: `${baseURL}/products/`,
+  headers: {
+    "x-token": localStorage.getItem("jwt"),
+  },
+});
 export default {
   components: {
     DataTable,
@@ -196,9 +203,7 @@ export default {
   methods: {
     async getProducts() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/products?limit=100&page=1"
-        );
+        const response = await axiosInstance.get("?limit=100&page=1");
         this.products = response.data.products;
         console.log(this.products);
         this.count = response.data.count;
@@ -208,9 +213,11 @@ export default {
     },
     async getCategories() {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/categories"
-        );
+        const response = await axios.get(baseURL + "/categories", {
+          headers: {
+            "x-token": localStorage.getItem("jwt"),
+          },
+        });
         this.categories = response.data.categories;
         this.count = response.data.count;
       } catch (error) {
@@ -220,7 +227,7 @@ export default {
     },
     async deleteProduct(id) {
       try {
-        await axios.delete(`http://localhost:3000/api/products/${id}`);
+        await axiosInstance.delete(`/${id}`);
         this.getProducts();
       } catch (error) {
         console.error(`Error al eliminar el producto con ID ${id}:`, error);
@@ -249,10 +256,7 @@ export default {
     },
     async postProuct() {
       try {
-        const response = await axios.post(
-          "http://localhost:3000/api/products",
-          this.editedProduct
-        );
+        const response = await axiosInstance.post("", this.editedProduct);
         if (response.status === 201) {
           this.getProducts();
           this.isVisibleEditDialog = false;
@@ -266,8 +270,9 @@ export default {
 
     async saveProductChanges() {
       try {
-        const response = await axios.put(
-          `http://localhost:3000/api/products/${this.editedProduct.id}`,
+        const response = await axiosInstance.put(
+          `/${this.editedProduct.id}`,
+
           this.editedProduct
         );
         if (response.status === 204) {
